@@ -1,0 +1,22 @@
+.input { grid-area: input; }
+.graphic { grid-area: graphic; }
+.timeLine { grid-area: timeLine; }
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'input input graphic graphic graphic graphic'
+    'input input graphic graphic graphic graphic'
+    'input input graphic graphic graphic graphic'
+    'timeLine timeLine timeLine timeLine timeLine timeLine';
+  gap: 1px;
+  background-color: #000000;
+  padding: 1px;
+}
+
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+}
