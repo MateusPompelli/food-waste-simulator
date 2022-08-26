@@ -1,1 +1,58 @@
-<p>form works!</p>
+<div class="flex">
+  <div class="w-1/2 h-screen bg-[#0d6eb6] p-4 flex flex-col">
+    <div class="self-center h-fit my-auto">
+      <h1 class="text-8xl text-center text-white font-bold my-auto">
+        PigShow.
+      </h1>
+      <h2 class="text-white text-center text-4xl mt-4">
+        Simule o quanto você poderia estar economizando.
+      </h2>
+    </div>
+  </div>
+  <div class="w-1/2 h-screen p-4 border mx-auto bg-slate-50">
+    <form (onSubmit)="handleSubmit($event)" class="flex flex-col my-2 gap-2"
+    [formGroup]="form"
+    >
+      <label for="qtd_animais" class="text-lg font-semibold"
+        >Quantidade de Animais</label
+      >
+      <input
+        id="qtd_animais"
+        type="number"
+        placeholder="Escreva a quantidade de animais"
+        class="p-2 rounded-md border"
+        formControlName="qtdAnimais"
+      />
+
+      <details class="bg-white rounded-md">
+        <summary class="p-4 cursor-pointer">Avançado</summary>
+        <div class="flex flex-col px-4 pb-4 gap-2">
+          <label for="consumo">Consumo por animal (em gramas)</label>
+          <input
+            id="consumo"
+            type="number"
+            placeholder="Escreva a Consumo por animal"
+            value="3000"
+            class="p-2 rounded-md border"
+          />
+
+          <label for="periodo">Periodo</label>
+          <input
+            id="periodo"
+            type="text"
+            placeholder="Escreva a Periodo"
+            value="365"
+            class="p-2 rounded-md border"
+          />
+        </div>
+      </details>
+      <button
+        (click)="handleSubmit($event)"
+        type="submit"
+        class="p-2 rounded-md bg-slate-500 text-white"
+      >
+        Iniciar simulação
+      </button>
+    </form>
+  </div>
+</div>
