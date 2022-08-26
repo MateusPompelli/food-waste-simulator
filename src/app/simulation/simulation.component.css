@@ -1,6 +1,34 @@
-.input { grid-area: input; }
-.graphic { grid-area: graphic; }
-.timeLine { grid-area: timeLine; }
+.input {
+  grid-area: input;
+  display: inline-grid;
+}
+
+.input div {
+  display: inline-flex;
+  width: 100%;
+  height: 23px;
+  padding: 1%;
+}
+
+.input-matrix {
+  margin-left: 15.4vmin;
+}
+
+.input-time {
+  margin-left: 3vmin;
+}
+
+.input div label{
+  font-size: 19px;
+}
+
+.graphic {
+  grid-area: graphic;
+}
+
+.timeLine {
+  grid-area: timeLine;
+}
 
 .grid-container {
   display: grid;
@@ -14,7 +42,7 @@
   padding: 1px;
 }
 
-.grid-container > div {
+.grid-container>div {
   background-color: rgba(255, 255, 255, 0.8);
   text-align: center;
   padding: 20px 0;
