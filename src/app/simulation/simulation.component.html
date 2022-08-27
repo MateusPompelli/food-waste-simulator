@@ -1,14 +1,38 @@
-<div class="grid-container">
-  <div class="input">
-    <div>
-      <label for="fname">Quantidade de Matriz:</label>
-      <input class="input-matrix" type="number" name="fname">
-    </div>
-    <div>
-      <label for="fname">Tempo desejado para simulação (Anos):</label>
-      <input class="input-time" type="number" name="fname">
-    </div>
+<div class="w-full bg-[#0d6eb6] p-4 flex flex-row">
+  <img src="assets/porco.png" alt="" class="w-28 relative rounded-full" />
+  <h1 class="text-2xl text-center text-white font-bold mx-auto my-auto">
+    Simulando ⏳
+  </h1>
+</div>
+
+<div class="w-full grid grid-cols-2">
+  <div class="w-full col-span-1">
+    <ul class="w-full p-4">
+      <li class="flex justify-between w-full bg-slate-100 my-2 p-4 rounded-md">
+        Dinheiro perdido com ração:
+        <span class="font-bold text-red-700">{{ dinheiroPerdido }}</span>
+      </li>
+      <li class="flex justify-between w-full bg-slate-100 my-2 p-4 rounded-md">
+        Quantidade de ração disperdiçada:
+        <span class="font-bold text-red-700">20kg</span>
+      </li>
+      <li class="flex justify-between w-full bg-slate-100 my-2 p-4 rounded-md">
+        Se esse dinheiro estivesse investido (1%):
+        <span class="font-bold text-green-700">R$ 20</span>
+      </li>
+    </ul>
   </div>
-  <div class="graphic">graphic</div>
-  <div class="timeLine">timeLine</div>
+  <div class="w-full col-span-1">
+    <canvas baseChart [type]="'bar'" class="w-full bg-red-300"> </canvas>
+  </div>
+</div>
+<div class="w-1/2 mx-auto col-span-1 text-center">
+  <div class="flex mx-auto gap-4 justify-center mb-4">
+    <button class="bg-purple-500 w-20 h-20 border rounded-md">Pause</button>
+    <button class="bg-purple-500 w-20 h-20 border rounded-md">2x</button>
+  </div>
+  <div class="w-full bg-slate-200 h-10 flex">
+    <p class="self-center my-auto text-center mx-auto z-40">20/365 dias</p>
+    <div class="h-10 w-1/4 bg-red-500 absolute z-0"></div>
+  </div>
 </div>

@@ -14,6 +14,7 @@ export class FormComponent implements OnInit {
     consumoGramas: 3000,
     periodo: 30,
   };
+  
   constructor(private _formBuilder: FormBuilder) {
     this.form = this._formBuilder.group({
       qtdAnimais: [this.formValues.qtdAnimais],
