@@ -5,7 +5,7 @@ import { SimulationComponent } from './simulation/simulation.component';
 
 const routes: Routes = [
   { path: '', component: FormComponent },
-  { path: 'simulacao', component: SimulationComponent }
+  { path: 'simulation', component: SimulationComponent }
 ];
 
 @NgModule({
