@@ -9,9 +9,9 @@ import { Chart, ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
 })
 export class SimulationComponent implements OnInit {
   consumoGramas: number = 3000;
-  periodo: number = 365;
+  periodo: number = 1;
   precoRacao: number = 2.3;
-  qtdAnimais: number = 500;
+  qtdAnimais: number = 100;
 
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [
@@ -55,17 +55,15 @@ export class SimulationComponent implements OnInit {
       },
     },
   };
-  public lineChartType: ChartType = 'line';
 
+  public lineChartType: ChartType = 'line';
   dinheiroPerdido: number = 0;
-  quantidadeAnimais: number = 1000;
-  consumoPorAnimal = 3000;
-  armazenamento: Array<{}> = [{ 
+  armazenamento: Array<{}> = [{
     consumo: 0,
   }];
 
-
   constructor() { }
+
   ngOnInit(): void {
     this.controlTime();
   }
@@ -75,54 +73,63 @@ export class SimulationComponent implements OnInit {
 
     for (let i = 0; i < time; i++) {
       this.desperdicioCarrinho();
-      this.calculoMes(this.consumoPorAnimal);      
+      this.calculoMes(this.consumoGramas);
       await this.delay(1000);
-      
     }
-
   }
 
   delay(time: number) {
     return new Promise(resolve => setTimeout(resolve, time));
   }
 
-  calculoMes(n:number): number {
-    let valorTotal = n;
+  calculoMes(value: number): number {
+    let desperdicioAtoTratar = 0;
+    let desperdicioPegarDemaisRacao = 0;
+    let desperdicioRacaoNaoIngerida = 0;
+    let desperdicioDoAnimal = 0;
 
-    for(let i=0; i<30; i++){
+    for (let i = 0; i < 30; i++) {
+      let desperdico1 = this.desperdicioAtoTratar(value);
+      value = value - (desperdico1 / this.qtdAnimais);
 
-      let desperdico1 = this.desperdicioAtoTratar();
-      
+      let desperdico2 = this.desperdicioPegarDemaisRacao(value);
+      value = value - (desperdico2 / this.qtdAnimais);
+
+      let desperdico3 = this.desperdicioRacaoNaoIngerida(value);
+      value = value - (desperdico3 / this.qtdAnimais);
+
+      let desperdico4 = this.desperdicioDoAnimal(value);
+      value = value - (desperdico4 / this.qtdAnimais);
     }
     return 1;
   }
 
   desperdicioCarrinho(): number {
-    return ((this.generateRandom() * (this.consumoPorAnimal * this.quantidadeAnimais)) * 7);
+    return ((this.generateRandom() * (this.consumoGramas * this.qtdAnimais)) * 7);
   }
 
-  desperdicioAtoTratar(): number {
-    return ((this.generateRandom() * (this.consumoPorAnimal * this.quantidadeAnimais)));
+  desperdicioAtoTratar(value: number): number {
+    return ((this.generateRandom() * (value * this.qtdAnimais)));
   }
 
-  desperdicioPegarDemaisRacao(): number {
-    return 1;
+  desperdicioPegarDemaisRacao(value: number): number {
+    return ((this.generateRandom() * (value * this.qtdAnimais)));
   }
 
-  pegarMenosRacao(): number {
-    return 1;
+  desperdicioRacaoNaoIngerida(value: number): number {
+    return ((this.generateRandom() * (value * this.qtdAnimais)));
   }
 
-  desperdicioRacaoNaoIngerida(): number {
-    return 1;
+  desperdicioDoAnimal(value: number): number {
+    return ((this.generateRandom() * (value * this.qtdAnimais)));
   }
 
-  desperdicioDoAnimal(): number {
-    return 1;
-  }
+  // pegarMenosRacao(): number {
+  //   return ((this.generateRandom() * (this.consumoGramas * this.qtdAnimais)));
+  // }
 
-  generateRandom():number {
-    const randomico = (Math.random()*(0.01 - 0.001)+0.001);
+  generateRandom(): number {
+    const randomico = (Math.random() * (0.01 - 0.001) + 0.001);
     return parseFloat(randomico.toFixed(3));
   }
 
