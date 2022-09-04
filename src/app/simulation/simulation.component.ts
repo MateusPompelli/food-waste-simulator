@@ -8,10 +8,10 @@ import { Chart, ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
   styleUrls: ['./simulation.component.css'],
 })
 export class SimulationComponent implements OnInit {
-  consumoGramas: number = 3000;
-  periodo: number = 1;
-  precoRacao: number = 2.3;
-  qtdAnimais: number = 100;
+  consumptionGrams: number = 3000;
+  period: number = 1;
+  feedPrice: number = 2.3;
+  numberAnimals: number = 100;
 
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [
@@ -58,31 +58,31 @@ export class SimulationComponent implements OnInit {
 
   public lineChartType: ChartType = 'line';
 
-  armazenamento: Array<{
-    desperdicioAtoTratar: number,
-    desperdicioPegarDemaisRacao: number,
-    desperdicioRacaoNaoIngerida: number,
-    desperdicioDoAnimal: number,
-    desperdicioTotalMes: number,
-    desperdicioTotalAcumulado: number,
-    dinheiroPerdidoMes: number,
-    dinheiroPerdidoAcumulado: number,
-    racaoConsumidaAcumuladoMes: number,
-    racaoConsumidaAcumulado: number,
-    desperdicioCarrinho: number,
+  manualFlow: Array<{
+    wastingWhenTreating: number,
+    wastingTooMuchRation: number,
+    wastingUneatenRation: number,
+    wastingRationByTheAnimal: number,
+    wasteTotalMonth: number,
+    totalAccumulatedWaste: number,
+    moneyLostMonthly: number,
+    totalAccumulatedLostMoney: number,
+    consumedRationAccumulatedMonth: number,
+    consumedRationAccumulated: number,
+    wastingOfRationTrolley: number,
   }> = [];
 
   constructor() { }
 
   ngOnInit(): void {
-    this.controlTime();
+    this.controlTimeSimulation();
   }
 
-  async controlTime(): Promise<void> {
-    const time = this.periodo * 12;
+  async controlTimeSimulation(): Promise<void> {
+    const time = this.period * 12;
 
     for (let i = 0; i < time; i++) {
-      this.calculoMes();
+      this.manualFlowCalculation();
       await this.delay(800);
     }
   }
@@ -91,79 +91,79 @@ export class SimulationComponent implements OnInit {
     return new Promise(resolve => setTimeout(resolve, time));
   }
 
-  calculoMes(): void {
-    let desperdicioAtoTratar = 0;
-    let desperdicioPegarDemaisRacao = 0;
-    let desperdicioRacaoNaoIngerida = 0;
-    let desperdicioDoAnimal = 0;
-    let desperdicioTotalMes = 0;
+  manualFlowCalculation(): void {
+    let wastingWhenTreating = 0;
+    let wastingTooMuchRation = 0;
+    let wastingUneatenRation = 0;
+    let wastingRationByTheAnimal = 0;
+    let wasteTotalMonth = 0;
 
-    let desperdicioCarrinho = this.desperdicioCarrinho();
+    let wastingOfRationTrolley = this.wastingOfRationTrolley();
 
     for (let i = 0; i < 30; i++) {
-      let value = this.consumoGramas;
-      let desperdico1 = this.desperdicioAtoTratar(value);
-      value = value - (desperdico1 / this.qtdAnimais);
-      desperdicioAtoTratar = desperdicioAtoTratar + desperdico1;
+      let consumptionAccumulatedGrams = this.consumptionGrams;
+      let firstWaste = this.wastingWhenTreating(consumptionAccumulatedGrams);
+      consumptionAccumulatedGrams = consumptionAccumulatedGrams - (firstWaste / this.numberAnimals);
+      wastingWhenTreating = wastingWhenTreating + firstWaste;
       
 
-      let desperdico2 = this.desperdicioPegarDemaisRacao(value);
-      value = value - (desperdico2 / this.qtdAnimais);
-      desperdicioPegarDemaisRacao = desperdicioPegarDemaisRacao + desperdico2;
+      let secondWaste = this.wastingTooMuchRation(consumptionAccumulatedGrams);
+      consumptionAccumulatedGrams = consumptionAccumulatedGrams - (secondWaste / this.numberAnimals);
+      wastingTooMuchRation = wastingTooMuchRation + secondWaste;
       
-      let desperdico3 = this.desperdicioRacaoNaoIngerida(value);
-      value = value - (desperdico3 / this.qtdAnimais);
-      desperdicioRacaoNaoIngerida = desperdicioRacaoNaoIngerida + desperdico3;
+      let thirdWaste = this.wastingUneatenRation(consumptionAccumulatedGrams);
+      consumptionAccumulatedGrams = consumptionAccumulatedGrams - (thirdWaste / this.numberAnimals);
+      wastingUneatenRation = wastingUneatenRation + thirdWaste;
       
-      let desperdico4 = this.desperdicioDoAnimal(value);
-      value = value - (desperdico4 / this.qtdAnimais);
-      desperdicioDoAnimal = desperdicioDoAnimal + desperdico4;
+      let fourthWaste = this.wastingRationByTheAnimal(consumptionAccumulatedGrams);
+      consumptionAccumulatedGrams = consumptionAccumulatedGrams - (fourthWaste / this.numberAnimals);
+      wastingRationByTheAnimal = wastingRationByTheAnimal + fourthWaste;
     }
 
-    desperdicioTotalMes = desperdicioAtoTratar + desperdicioPegarDemaisRacao + desperdicioRacaoNaoIngerida + desperdicioDoAnimal + desperdicioCarrinho;
-    console.log(desperdicioTotalMes / 1000)
-    this.armazenamento.push({
-      desperdicioAtoTratar: desperdicioAtoTratar,
-      desperdicioPegarDemaisRacao: desperdicioPegarDemaisRacao,
-      desperdicioRacaoNaoIngerida: desperdicioRacaoNaoIngerida,
-      desperdicioDoAnimal: desperdicioDoAnimal,
-      desperdicioTotalMes: desperdicioTotalMes,
-      desperdicioCarrinho: desperdicioCarrinho,
-      desperdicioTotalAcumulado: this.armazenamento.length == 0 ?  desperdicioTotalMes : (this.armazenamento[this.armazenamento.length - 1].desperdicioTotalAcumulado + desperdicioTotalMes),
-      dinheiroPerdidoMes: (desperdicioTotalMes / 1000) * this.precoRacao,
-      dinheiroPerdidoAcumulado: this.armazenamento.length == 0 ?  ((desperdicioTotalMes / 1000) * this.precoRacao) : (this.armazenamento[this.armazenamento.length - 1].dinheiroPerdidoAcumulado + ((desperdicioTotalMes / 1000) * this.precoRacao)),
-      racaoConsumidaAcumuladoMes: (this.consumoGramas * this.qtdAnimais) * 30,
-      racaoConsumidaAcumulado: this.armazenamento.length == 0 ?  ((this.consumoGramas * this.qtdAnimais) * 30) : (this.armazenamento[this.armazenamento.length - 1].racaoConsumidaAcumulado + ((this.consumoGramas * this.qtdAnimais) * 30)),
+    wasteTotalMonth = wastingWhenTreating + wastingTooMuchRation + wastingUneatenRation + wastingRationByTheAnimal + wastingOfRationTrolley;
+    console.log(wasteTotalMonth / 1000)
+    this.manualFlow.push({
+      wastingWhenTreating: wastingWhenTreating,
+      wastingTooMuchRation: wastingTooMuchRation,
+      wastingUneatenRation: wastingUneatenRation,
+      wastingRationByTheAnimal: wastingRationByTheAnimal,
+      wasteTotalMonth: wasteTotalMonth,
+      wastingOfRationTrolley: wastingOfRationTrolley,
+      totalAccumulatedWaste: this.manualFlow.length == 0 ?  wasteTotalMonth : (this.manualFlow[this.manualFlow.length - 1].totalAccumulatedWaste + wasteTotalMonth),
+      moneyLostMonthly: (wasteTotalMonth / 1000) * this.feedPrice,
+      totalAccumulatedLostMoney: this.manualFlow.length == 0 ?  ((wasteTotalMonth / 1000) * this.feedPrice) : (this.manualFlow[this.manualFlow.length - 1].totalAccumulatedLostMoney + ((wasteTotalMonth / 1000) * this.feedPrice)),
+      consumedRationAccumulatedMonth: (this.consumptionGrams * this.numberAnimals) * 30,
+      consumedRationAccumulated: this.manualFlow.length == 0 ?  ((this.consumptionGrams * this.numberAnimals) * 30) : (this.manualFlow[this.manualFlow.length - 1].consumedRationAccumulated + ((this.consumptionGrams * this.numberAnimals) * 30)),
     })
   }
 
-  desperdicioCarrinho(): number {
-    return ((this.generateRandom() * (this.consumoGramas * this.qtdAnimais)) * 7);
+  wastingOfRationTrolley(): number {
+    return ((this.generateRandomWaste() * (this.consumptionGrams * this.numberAnimals)) * 7);
   }
 
-  desperdicioAtoTratar(value: number): number {
-    return ((this.generateRandom() * (value * this.qtdAnimais)));
+  wastingWhenTreating(value: number): number {
+    return ((this.generateRandomWaste() * (value * this.numberAnimals)));
   }
 
-  desperdicioPegarDemaisRacao(value: number): number {
-    return ((this.generateRandom() * (value * this.qtdAnimais)));
+  wastingTooMuchRation(value: number): number {
+    return ((this.generateRandomWaste() * (value * this.numberAnimals)));
   }
 
-  desperdicioRacaoNaoIngerida(value: number): number {
-    return ((this.generateRandom() * (value * this.qtdAnimais)));
+  wastingUneatenRation(value: number): number {
+    return ((this.generateRandomWaste() * (value * this.numberAnimals)));
   }
 
-  desperdicioDoAnimal(value: number): number {
-    return ((this.generateRandom() * (value * this.qtdAnimais)));
+  wastingRationByTheAnimal(value: number): number {
+    return ((this.generateRandomWaste() * (value * this.numberAnimals)));
   }
 
-  // pegarMenosRacao(): number {
-  //   return ((this.generateRandom() * (this.consumoGramas * this.qtdAnimais)));
+  // getLessRation(): number {
+  //   return ((this.generateRandomWaste() * (this.consumptionGrams * this.numberAnimals)));
   // }
 
-  generateRandom(): number {
-    const randomico = (Math.random() * (0.06 - 0.001) + 0.001);
-    return parseFloat(randomico.toFixed(3));
+  generateRandomWaste(): number {
+    const randomWastePercentage = (Math.random() * (0.06 - 0.001) + 0.001);
+    return parseFloat(randomWastePercentage.toFixed(3));
   }
 
 }
