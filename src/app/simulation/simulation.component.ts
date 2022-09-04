@@ -69,6 +69,7 @@ export class SimulationComponent implements OnInit {
     dinheiroPerdidoAcumulado: number,
     racaoConsumidaAcumuladoMes: number,
     racaoConsumidaAcumulado: number,
+    desperdicioCarrinho: number,
   }> = [];
 
   constructor() { }
@@ -81,7 +82,6 @@ export class SimulationComponent implements OnInit {
     const time = this.periodo * 12;
 
     for (let i = 0; i < time; i++) {
-      this.desperdicioCarrinho();
       this.calculoMes();
       await this.delay(800);
     }
@@ -97,6 +97,8 @@ export class SimulationComponent implements OnInit {
     let desperdicioRacaoNaoIngerida = 0;
     let desperdicioDoAnimal = 0;
     let desperdicioTotalMes = 0;
+
+    let desperdicioCarrinho = this.desperdicioCarrinho();
 
     for (let i = 0; i < 30; i++) {
       let value = this.consumoGramas;
@@ -118,14 +120,15 @@ export class SimulationComponent implements OnInit {
       desperdicioDoAnimal = desperdicioDoAnimal + desperdico4;
     }
 
-    desperdicioTotalMes = desperdicioAtoTratar + desperdicioPegarDemaisRacao + desperdicioRacaoNaoIngerida + desperdicioDoAnimal;
-    
+    desperdicioTotalMes = desperdicioAtoTratar + desperdicioPegarDemaisRacao + desperdicioRacaoNaoIngerida + desperdicioDoAnimal + desperdicioCarrinho;
+    console.log(desperdicioTotalMes / 1000)
     this.armazenamento.push({
       desperdicioAtoTratar: desperdicioAtoTratar,
       desperdicioPegarDemaisRacao: desperdicioPegarDemaisRacao,
       desperdicioRacaoNaoIngerida: desperdicioRacaoNaoIngerida,
       desperdicioDoAnimal: desperdicioDoAnimal,
       desperdicioTotalMes: desperdicioTotalMes,
+      desperdicioCarrinho: desperdicioCarrinho,
       desperdicioTotalAcumulado: this.armazenamento.length == 0 ?  desperdicioTotalMes : (this.armazenamento[this.armazenamento.length - 1].desperdicioTotalAcumulado + desperdicioTotalMes),
       dinheiroPerdidoMes: (desperdicioTotalMes / 1000) * this.precoRacao,
       dinheiroPerdidoAcumulado: this.armazenamento.length == 0 ?  ((desperdicioTotalMes / 1000) * this.precoRacao) : (this.armazenamento[this.armazenamento.length - 1].dinheiroPerdidoAcumulado + ((desperdicioTotalMes / 1000) * this.precoRacao)),
