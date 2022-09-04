@@ -57,10 +57,19 @@ export class SimulationComponent implements OnInit {
   };
 
   public lineChartType: ChartType = 'line';
-  dinheiroPerdido: number = 0;
-  armazenamento: Array<{}> = [{
-    consumo: 0,
-  }];
+
+  armazenamento: Array<{
+    desperdicioAtoTratar: number,
+    desperdicioPegarDemaisRacao: number,
+    desperdicioRacaoNaoIngerida: number,
+    desperdicioDoAnimal: number,
+    desperdicioTotalMes: number,
+    desperdicioTotalAcumulado: number,
+    dinheiroPerdidoMes: number,
+    dinheiroPerdidoAcumulado: number,
+    racaoConsumidaAcumuladoMes: number,
+    racaoConsumidaAcumulado: number,
+  }> = [];
 
   constructor() { }
 
@@ -73,8 +82,8 @@ export class SimulationComponent implements OnInit {
 
     for (let i = 0; i < time; i++) {
       this.desperdicioCarrinho();
-      this.calculoMes(this.consumoGramas);
-      await this.delay(1000);
+      this.calculoMes();
+      await this.delay(800);
     }
   }
 
@@ -82,26 +91,47 @@ export class SimulationComponent implements OnInit {
     return new Promise(resolve => setTimeout(resolve, time));
   }
 
-  calculoMes(value: number): number {
+  calculoMes(): void {
     let desperdicioAtoTratar = 0;
     let desperdicioPegarDemaisRacao = 0;
     let desperdicioRacaoNaoIngerida = 0;
     let desperdicioDoAnimal = 0;
+    let desperdicioTotalMes = 0;
 
     for (let i = 0; i < 30; i++) {
+      let value = this.consumoGramas;
       let desperdico1 = this.desperdicioAtoTratar(value);
       value = value - (desperdico1 / this.qtdAnimais);
+      desperdicioAtoTratar = desperdicioAtoTratar + desperdico1;
+      
 
       let desperdico2 = this.desperdicioPegarDemaisRacao(value);
       value = value - (desperdico2 / this.qtdAnimais);
-
+      desperdicioPegarDemaisRacao = desperdicioPegarDemaisRacao + desperdico2;
+      
       let desperdico3 = this.desperdicioRacaoNaoIngerida(value);
       value = value - (desperdico3 / this.qtdAnimais);
-
+      desperdicioRacaoNaoIngerida = desperdicioRacaoNaoIngerida + desperdico3;
+      
       let desperdico4 = this.desperdicioDoAnimal(value);
       value = value - (desperdico4 / this.qtdAnimais);
+      desperdicioDoAnimal = desperdicioDoAnimal + desperdico4;
     }
-    return 1;
+
+    desperdicioTotalMes = desperdicioAtoTratar + desperdicioPegarDemaisRacao + desperdicioRacaoNaoIngerida + desperdicioDoAnimal;
+    
+    this.armazenamento.push({
+      desperdicioAtoTratar: desperdicioAtoTratar,
+      desperdicioPegarDemaisRacao: desperdicioPegarDemaisRacao,
+      desperdicioRacaoNaoIngerida: desperdicioRacaoNaoIngerida,
+      desperdicioDoAnimal: desperdicioDoAnimal,
+      desperdicioTotalMes: desperdicioTotalMes,
+      desperdicioTotalAcumulado: this.armazenamento.length == 0 ?  desperdicioTotalMes : (this.armazenamento[this.armazenamento.length - 1].desperdicioTotalAcumulado + desperdicioTotalMes),
+      dinheiroPerdidoMes: (desperdicioTotalMes / 1000) * this.precoRacao,
+      dinheiroPerdidoAcumulado: this.armazenamento.length == 0 ?  ((desperdicioTotalMes / 1000) * this.precoRacao) : (this.armazenamento[this.armazenamento.length - 1].dinheiroPerdidoAcumulado + ((desperdicioTotalMes / 1000) * this.precoRacao)),
+      racaoConsumidaAcumuladoMes: (this.consumoGramas * this.qtdAnimais) * 30,
+      racaoConsumidaAcumulado: this.armazenamento.length == 0 ?  ((this.consumoGramas * this.qtdAnimais) * 30) : (this.armazenamento[this.armazenamento.length - 1].racaoConsumidaAcumulado + ((this.consumoGramas * this.qtdAnimais) * 30)),
+    })
   }
 
   desperdicioCarrinho(): number {
@@ -129,7 +159,7 @@ export class SimulationComponent implements OnInit {
   // }
 
   generateRandom(): number {
-    const randomico = (Math.random() * (0.01 - 0.001) + 0.001);
+    const randomico = (Math.random() * (0.06 - 0.001) + 0.001);
     return parseFloat(randomico.toFixed(3));
   }
 
