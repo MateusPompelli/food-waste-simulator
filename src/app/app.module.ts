@@ -15,7 +15,7 @@ import { NgChartsModule } from 'ng2-charts';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    NgChartsModule
+    NgChartsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Chart, ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
 
 @Component({
@@ -12,11 +12,12 @@ export class SimulationComponent implements OnInit {
   period: number = 1;
   feedPrice: number = 2.3;
   numberAnimals: number = 100;
-
+  moneyLost: any[] = []
+  westLost:any[] = []
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [
       {
-        data: [65, 59, 80, 81, 56, 55, 40],
+        data: [] ,
         label: 'Dinheiro perdido',
         backgroundColor: 'rgba(255,0,0,0.1)',
         borderColor: 'rgba(255,0,0,1)',
@@ -41,12 +42,33 @@ export class SimulationComponent implements OnInit {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
   };
 
+  public lineChartDataWest: ChartConfiguration['data'] = {
+    datasets: [
+      
+      {
+        data: [],
+        label: 'Dinheiro investido',
+        backgroundColor: 'rgba(0,255,0,0.1)',
+        borderColor: 'rgba(0,255,0,1)',
+        pointBackgroundColor: '#999',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(0,255,0,1)',
+        fill: 'origin',
+      },
+    ],
+    labels: [],
+  };
+
   public lineChartOptions: ChartConfiguration['options'] = {
     elements: {
       line: {
         tension: 0.5,
       },
     },
+    animation: {
+      duration: 0
+  },
     scales: {
       // We use this empty structure as a placeholder for dynamic theming.
       x: {},
@@ -72,7 +94,15 @@ export class SimulationComponent implements OnInit {
     wastingOfRationTrolley: number,
   }> = [];
 
-  constructor() { }
+  constructor(private route: ActivatedRoute, public router: Router) {
+    this.route.queryParams.subscribe(params => {
+      this.consumptionGrams = params['consumptionGrams'];
+      this.period = params['period'];
+      this.feedPrice = params['feedPrice'];
+      this.numberAnimals = params['numberAnimals'];
+    });
+  
+  }
 
   ngOnInit(): void {
     this.controlTimeSimulation();
@@ -135,6 +165,45 @@ export class SimulationComponent implements OnInit {
       consumedRationAccumulatedMonth: (this.consumptionGrams * this.numberAnimals) * 30,
       consumedRationAccumulated: this.manualFlow.length == 0 ?  ((this.consumptionGrams * this.numberAnimals) * 30) : (this.manualFlow[this.manualFlow.length - 1].consumedRationAccumulated + ((this.consumptionGrams * this.numberAnimals) * 30)),
     })
+    this.moneyLost.push(this.manualFlow[this.manualFlow.length -1].totalAccumulatedLostMoney)
+    this.westLost.push(this.manualFlow[this.manualFlow.length -1].totalAccumulatedWaste)
+    this.lineChartData = {
+      datasets: [
+        {
+          data: this.moneyLost ,
+          label: 'Dinheiro perdido em R$',
+          backgroundColor: 'rgba(255,0,0,0.1)',
+          borderColor: 'rgba(255,0,0,1)',
+          pointBackgroundColor: '#999',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(255,0,0,1)',
+          fill: 'origin',
+        },        
+      ],
+      labels: this.moneyLost.map((item, index)=> index),
+    };
+
+    this.lineChartDataWest = {
+      datasets: [
+
+        {
+          data: this.westLost ,
+          label: 'Ração perdida em kg',
+          backgroundColor: 'rgba(0,0,255,0.1)',
+          borderColor: 'rgba(0,0,255,1)',
+          pointBackgroundColor: '#999',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(0,0,255,1)',
+          fill: 'origin',
+        },
+        
+      ],
+      labels: this.westLost.map((item, index)=> index),
+    };
+
+    
   }
 
   wastingOfRationTrolley(): number {

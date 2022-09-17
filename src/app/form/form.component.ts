@@ -11,18 +11,19 @@ import { Router } from '@angular/router';
 export class FormComponent implements OnInit {
   form: FormGroup;
   formValues = {
-    qtdAnimais: 12,
-    consumoGramas: 3000,
-    periodo: 30,
-    precoRacao: 2.3,
+    numberAnimals: 12,
+    consumptionGrams: 3000,
+    period: 30,
+    feedPrice: 2.3,
   };
 
-  constructor(private _formBuilder: FormBuilder, public router: Router) {
+  constructor(private _formBuilder: FormBuilder, public router: Router
+    ) {
     this.form = this._formBuilder.group({
-      qtdAnimais: [this.formValues.qtdAnimais],
-      consumoGramas: [this.formValues.consumoGramas],
-      periodo: [this.formValues.periodo],
-      precoRacao: [this.formValues.precoRacao],
+      numberAnimals: [this.formValues.numberAnimals],
+      consumptionGrams: [this.formValues.consumptionGrams],
+      period: [this.formValues.period],
+      feedPrice: [this.formValues.feedPrice],
     });
   }
 
@@ -30,7 +31,7 @@ export class FormComponent implements OnInit {
 
   handleSubmit(event: Event) {
     event.preventDefault();
-    console.log(this.form.value);
+    
     this.router.navigate(['/simulation'], {
       queryParams: this.form.value,
     });

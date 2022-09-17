@@ -5,26 +5,28 @@
   </h1>
 </div>
 
-<div class="w-full grid grid-cols-2">
+<div class="w-full grid grid-cols-2" *ngIf="manualFlow">
   <div class="w-full col-span-1">
     <h1 class="text-2xl font-bold text-center mt-2">Ano Atual: 1</h1>
     <ul class="w-full p-4">
       <li class="flex justify-between w-full bg-slate-100 my-2 p-4 rounded-md">
         Dinheiro perdido com ração:
-        <span class="font-bold text-red-700">20</span>
+        <span class="font-bold text-red-700">{{(manualFlow[manualFlow.length -1 ].totalAccumulatedLostMoney).toFixed(2)}}</span>
       </li>
       <li class="flex justify-between w-full bg-slate-100 my-2 p-4 rounded-md">
         Quantidade de ração disperdiçada:
-        <span class="font-bold text-red-700">20kg</span>
+        <span class="font-bold text-red-700">{{(manualFlow[manualFlow.length -1 ].totalAccumulatedWaste /1000).toFixed(2)}}</span>
       </li>
-      <li class="flex justify-between w-full bg-slate-100 my-2 p-4 rounded-md">
+      <!-- <li class="flex justify-between w-full bg-slate-100 my-2 p-4 rounded-md">
         Se esse dinheiro estivesse investido (1%):
         <span class="font-bold text-green-700">R$ 20</span>
-      </li>
+      </li> -->
     </ul>
   </div>
   <div class="w-full col-span-1">
     <canvas baseChart width="400" height="200" class="mt-2" [data]="lineChartData" [options]="lineChartOptions"
+      [type]="lineChartType"></canvas>
+      <canvas baseChart width="400" height="200" class="mt-2" [data]="lineChartDataWest" [options]="lineChartOptions"
       [type]="lineChartType"></canvas>
   </div>
 </div>
