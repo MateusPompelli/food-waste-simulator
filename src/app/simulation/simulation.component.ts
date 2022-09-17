@@ -225,9 +225,19 @@ export class SimulationComponent implements OnInit {
     return parseFloat(randomWastePercentage.toFixed(3));
   }
 
-  onClickOnButton(){
-    this.delayInMs =10000000000000
+  onPause(){
+    if (this.delayInMs >= 100000000000000){
+      this.delayInMs = 1000
+    }
+    else {
+      this.delayInMs = 100000000000000
+    }
+    
+
     console.log(this.delayInMs)
   }
+  onTimer(){  
+    this.delayInMs = this.delayInMs-100
 
+  }
 }
