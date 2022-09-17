@@ -14,6 +14,7 @@ export class SimulationComponent implements OnInit {
   numberAnimals: number = 100;
   moneyLost: any[] = []
   westLost:any[] = []
+  delayInMs: number = 1000
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [
       {
@@ -27,19 +28,8 @@ export class SimulationComponent implements OnInit {
         pointHoverBorderColor: 'rgba(255,0,0,1)',
         fill: 'origin',
       },
-      {
-        data: [28, 48, 40, 19, 86, 27, 90],
-        label: 'Dinheiro investido',
-        backgroundColor: 'rgba(0,255,0,0.1)',
-        borderColor: 'rgba(0,255,0,1)',
-        pointBackgroundColor: '#999',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(0,255,0,1)',
-        fill: 'origin',
-      },
     ],
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    labels: [],
   };
 
   public lineChartDataWest: ChartConfiguration['data'] = {
@@ -113,7 +103,7 @@ export class SimulationComponent implements OnInit {
 
     for (let i = 0; i < time; i++) {
       this.manualFlowCalculation();
-      await this.delay(800);
+      await this.delay(this.delayInMs);
     }
   }
 
@@ -181,7 +171,7 @@ export class SimulationComponent implements OnInit {
           fill: 'origin',
         },        
       ],
-      labels: this.moneyLost.map((item, index)=> index),
+      labels: this.moneyLost.map((item, index)=> index+1),
     };
 
     this.lineChartDataWest = {
@@ -200,7 +190,7 @@ export class SimulationComponent implements OnInit {
         },
         
       ],
-      labels: this.westLost.map((item, index)=> index),
+      labels: this.westLost.map((item, index)=> index+1),
     };
 
     
@@ -233,6 +223,11 @@ export class SimulationComponent implements OnInit {
   generateRandomWaste(): number {
     const randomWastePercentage = (Math.random() * (0.06 - 0.001) + 0.001);
     return parseFloat(randomWastePercentage.toFixed(3));
+  }
+
+  onClickOnButton(){
+    this.delayInMs =10000000000000
+    console.log(this.delayInMs)
   }
 
 }
